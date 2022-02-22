@@ -1,6 +1,6 @@
 
 
-function Vehicle(x, y){
+function Vehicle(x, y, c){
     this.pos = new p5.Vector(random(width), random(height))
     this.vel = p5.Vector.random2D()
     this.acc = new p5.Vector(0, 0)
@@ -8,12 +8,18 @@ function Vehicle(x, y){
     this.target = new p5.Vector(x, y)
     this.maxSpeed = 4
     this.maxForce = 0.3
+
+    // our color
+    this.c = c
 }
 
 
 // shows the vehicle
 Vehicle.prototype.show = function(){
-    fill(210, 50, 100)
+    // now we can put our color to use!
+    fill(this.c)
+    stroke(this.c)
+
     circle(this.pos.x, this.pos.y, this.r*2)
 }
 
@@ -34,19 +40,14 @@ Vehicle.prototype.applyForce = function(f){
 Vehicle.prototype.behaviors = function(){
     // we always want to seek our target
     let seek = this.arrive(this.target)
-    // "I'm afraid of the mouse!", says this.
-    let mouse = new p5.Vector(mouseX, mouseY)
-    let flee = this.flee(mouse)
+
+
     // scaling room {
     seek.mult(1)
-    flee.mult(1)
     //              }
 
     // apply our forces
     this.applyForce(seek)
-    if (!mouseIsPressed){
-        this.applyForce(flee)
-    }
 }
 
 // seeks the target
