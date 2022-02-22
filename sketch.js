@@ -58,5 +58,6 @@ function draw() {
     }
     vh.update()
     vh.behaviors()
+    vh.edges()
   }
 }

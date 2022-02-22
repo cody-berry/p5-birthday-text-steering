@@ -36,18 +36,38 @@ Vehicle.prototype.applyForce = function(f){
     this.acc.add(f)
 }
 
+// checks the edges
+Vehicle.prototype.edges = function() {
+    if (this.pos.x + this.r > width) { // right
+        this.pos.x = this.r
+    } if (this.pos.x - this.r < 0) { // left
+        this.pos.x = width-this.r
+    } if (this.pos.y + this.r > height) { // bottom
+        this.pos.y = this.r
+    } if (this.pos.y - this.r < 0) { // top
+        this.pos.y = height-this.r
+    }
+}
+
 // applies the vehicle's behaviors
 Vehicle.prototype.behaviors = function(){
     // we always want to seek our target
     let seek = this.arrive(this.target)
+    // "I don't want to see the mouse!", says this.
+    let mouse = new p5.Vector(mouseX, mouseY)
+    let flee = this.flee(mouse)
 
 
     // scaling room {
     seek.mult(1)
+    flee.mult(1)
     //              }
 
     // apply our forces
     this.applyForce(seek)
+    if (mouseIsPressed) {
+        this.applyForce(flee)
+    }
 }
 
 // seeks the target
