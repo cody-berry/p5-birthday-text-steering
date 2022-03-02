@@ -12,6 +12,6 @@ main {
   width: auto;
   height: 100%;
   margin: auto;
-  background-color: darkgrey;
+  background-color: rgb(31,32,51);
   border: 5px solid black;
 }
