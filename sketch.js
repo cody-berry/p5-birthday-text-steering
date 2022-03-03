@@ -37,7 +37,7 @@ let p5amp
 
 
 function preload() {
-    font = loadFont('fonts/Meiryo-01.ttf')
+    font = loadFont('fonts/bpdots.otf')
     dtnThemeSong = loadSound('dtnthemesong.mp3', null, null)
 }
 
@@ -45,13 +45,13 @@ function preload() {
 function setup() {
     createCanvas(600, 300);
     colorMode(HSB, 360, 100, 100, 100);
-    strokeWeight(4)
+    strokeWeight(7)
     textSize(130)
     frameRate(140)
 
     let points = font.textToPoints(
         'Happy birthday Liya!', 10, height/2, 50,
-        {sampleFactor: 0.2, simplifyThreshold: 0})
+        {sampleFactor: 0.3, simplifyThreshold: 0})
 
     for (let i = 0; i < points.length; i++){
         vehicles.push(
@@ -60,6 +60,7 @@ function setup() {
                 color(map(points[i].x, 0, width, 0, 360), 100, 100),
                 round(random())))
     }
+    console.log(round(random()))
     p5amp = new p5.Amplitude(0)
 
     console.log(points.length)
@@ -80,25 +81,30 @@ function draw() {
 
         if (vh.pos.x >= showingPosition) {
             vh.show()
+            if (playing) {
+                vh.showText()
+            }
         }
 
         vh.update()
         // 45000 is the amount of milliseconds the song lasts for.
         if (millis() - songStartMillis > 45000) {
             dtnThemeSong.stop()
+            vh.applyForce(vh.arrive(vh.target))
+            playing = false
         }
-        vh.applyForce(vh.arrive(vh.target))
 
         if (mouseIsPressed) {
             vh.applyForce(vh.flee(new p5.Vector(mouseX, mouseY)).mult(0.5))
             vh.vel.setMag(4)
+            console.log(playing)
         }
 
 
         vh.edges()
 
         // update our r
-        vh.r = map(p5amp.getLevel(), 0.1, 0.5, 1, 8)
+        vh.r = map(p5amp.getLevel(), 0.1, 0.3, 1, 8)
         if (vh.invert) {
           vh.r = this.r - 8
           vh.r++

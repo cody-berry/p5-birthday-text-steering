@@ -26,8 +26,27 @@ class Vehicle {
         // now we can put our color to use!
         fill(this.c)
         stroke(this.c)
+        strokeWeight(5)
 
         circle(this.pos.x, this.pos.y, this.r*2)
+
+        // and black line
+        stroke(0, 0, 0)
+        strokeWeight(1)
+        line(this.pos.x, this.pos.y + this.r, this.pos.x, this.pos.y + this.r + 10)
+    }
+
+
+    // displays our 2 for a balloon
+    showText() {
+        fill(0, 0, 100)
+        noStroke()
+        textAlign(CENTER, CENTER)
+        textSize(this.r/2)
+        if (this.r/2 < 1) {
+            textSize(1)
+        }
+        text(2, this.pos.x, this.pos.y)
     }
 
 
