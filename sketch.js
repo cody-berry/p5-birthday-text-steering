@@ -33,64 +33,77 @@ let playing = false
 
 // the amount of milliseconds before the song started
 let songStartMillis
+let p5amp
 
 
 function preload() {
-  font = loadFont('fonts/AvenirNextLTPro-Demi.otf')
-  dtnThemeSong = loadSound('dtnthemesong.mp3', null, null)
+    font = loadFont('fonts/Meiryo-01.ttf')
+    dtnThemeSong = loadSound('dtnthemesong.mp3', null, null)
 }
 
 
 function setup() {
-  createCanvas(600, 300);
-  colorMode(HSB, 360, 100, 100, 100);
-  strokeWeight(4)
-  textSize(130)
-  frameRate(140)
+    createCanvas(600, 300);
+    colorMode(HSB, 360, 100, 100, 100);
+    strokeWeight(4)
+    textSize(130)
+    frameRate(140)
 
-  let points = font.textToPoints(
-      'Happy birthday Liya!', 10, height/2, 50,
-      {sampleFactor: 0.02, simplifyThreshold: 0})
+    let points = font.textToPoints(
+        'Happy birthday Liya!', 10, height/2, 50,
+        {sampleFactor: 0.2, simplifyThreshold: 0})
 
-  for (let i = 0; i < points.length; i++){
-    vehicles.push(
-        new Vehicle(
-            points[i].x, points[i].y,
-            color(map(points[i].x, 0, width-100, 0, 360), 100, 100),
-            round(random())))
-  }
+    for (let i = 0; i < points.length; i++){
+        vehicles.push(
+            new Vehicle(
+                points[i].x, points[i].y,
+                color(map(points[i].x, 0, width, 0, 360), 100, 100),
+                round(random())))
+    }
+    p5amp = new p5.Amplitude(0)
 
-  console.log(points.length)
+    console.log(points.length)
 }
 
 
 function draw() {
-  background(234, 24, 34)
+    background(234, 24, 34)
 
-  // // make a line moving from right to left and whatever it has covered is shown
-  // let showingPosition = width-frameCount*10
-  // stroke(0, 0, 100)
-  // line(showingPosition, 0, showingPosition, height)
-  //
-  // for (let i = 0; i < vehicles.length; i++){
-  //   let vh = vehicles[i]
-  //
-  //   if (vh.pos.x >= showingPosition) {
-  //     vh.show()
-  //   }
-  //
-  //   vh.update()
-  //   // 45000 is the amount of milliseconds the song lasts for.
-  //   if (millis() - songStartMillis > 45000) {
-  //     vh.behaviors()
-  //     dtnThemeSong.stop()
-  //     console.log("Stopping.")
-  //     noLoop()
-  //   }
-  //
-  //   vh.edges()
-  // }
-  console.log(frameRate())
+    // make a line moving from right to left and whatever it has covered is
+  // shown
+    let showingPosition = width-frameCount*10
+    stroke(0, 0, 100)
+    line(showingPosition, 0, showingPosition, height)
+
+    for (let i = 0; i < vehicles.length; i++) {
+        let vh = vehicles[i]
+
+        if (vh.pos.x >= showingPosition) {
+            vh.show()
+        }
+
+        vh.update()
+        // 45000 is the amount of milliseconds the song lasts for.
+        if (millis() - songStartMillis > 45000) {
+            dtnThemeSong.stop()
+        }
+        vh.applyForce(vh.arrive(vh.target))
+
+        if (mouseIsPressed) {
+            vh.applyForce(vh.flee(new p5.Vector(mouseX, mouseY)).mult(0.5))
+            vh.vel.setMag(4)
+        }
+
+
+        vh.edges()
+
+        // update our r
+        vh.r = map(p5amp.getLevel(), 0.1, 0.5, 1, 8)
+        if (vh.invert) {
+          vh.r = this.r - 8
+          vh.r++
+        }
+    }
 }
 
 
@@ -98,15 +111,14 @@ function draw() {
 
 
 function keyPressed() {
-  if (key === 's' && !playing) {
-    // console.log(dtnThemeSong.volume())
-    console.log("the song is about to play!")
-    dtnThemeSong.play()
-    songStartMillis = millis()
-    playing = true
-  }
+    if (key === 's' && !playing) {
+        // console.log(dtnThemeSong.volume())
+        dtnThemeSong.play()
+        songStartMillis = millis()
+        playing = true
+    }
 
-  // console.log("the mouse has been pressed!")
+    // console.log("the mouse has been pressed!")
 }
 
 

@@ -18,7 +18,6 @@ class Vehicle {
 
         // this.invert's description contains "the amplitude". Here, we'll
         // define the amplitude we're talking about.
-        this.p5amp = new p5.Amplitude()
     }
 
 
@@ -37,13 +36,6 @@ class Vehicle {
         this.pos.add(this.vel)
         this.vel.add(this.acc)
         this.acc.mult(0)
-
-        // update our r
-        this.r = map(this.p5amp.getLevel(), 0, 1, 1, 8)
-        if (this.invert) {
-            this.r = this.r - 8
-            this.r++
-        }
     }
 
 
@@ -68,28 +60,6 @@ class Vehicle {
     }
 
 
-    // applies the vehicle's behaviors
-    behaviors(){
-        // we always want to seek our target
-        let seek = this.arrive(this.target)
-        // "I don't want to see the mouse!", says this.
-        let mouse = new p5.Vector(mouseX, mouseY)
-        let flee = this.flee(mouse)
-
-
-        // scaling room {
-        seek.mult(1)
-        flee.mult(1)
-        //              }
-
-        // apply our forces
-        this.applyForce(seek)
-        if (mouseIsPressed) {
-            this.applyForce(flee)
-        }
-    }
-
-
     // seeks the target
     seek(target){
         // get a line from us to the target, the first step of getting the
@@ -107,7 +77,7 @@ class Vehicle {
     // flees the target
     flee(target){
         // fleeing is the opposite of seeking
-        if (true) {
+        if (mag(this.seek(target).x, this.seek(target).y) !== 0) {
             return this.seek(target).mult(-1)
         }
         else{
