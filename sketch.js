@@ -36,8 +36,8 @@ let songStartMillis
 
 
 function preload() {
-  font = loadFont('fonts/Meiryo-01.ttf')
-  dtnThemeSong = loadSound('dtnthemesong.mp3')
+  font = loadFont('fonts/AvenirNextLTPro-Demi.otf')
+  dtnThemeSong = loadSound('dtnthemesong.mp3', null, null)
 }
 
 
@@ -46,10 +46,11 @@ function setup() {
   colorMode(HSB, 360, 100, 100, 100);
   strokeWeight(4)
   textSize(130)
+  frameRate(140)
 
   let points = font.textToPoints(
       'Happy birthday Liya!', 10, height/2, 50,
-      {sampleFactor: 0.3, simplifyThreshold: 0})
+      {sampleFactor: 0.02, simplifyThreshold: 0})
 
   for (let i = 0; i < points.length; i++){
     vehicles.push(
@@ -58,6 +59,8 @@ function setup() {
             color(map(points[i].x, 0, width-100, 0, 360), 100, 100),
             round(random())))
   }
+
+  console.log(points.length)
 }
 
 
@@ -81,14 +84,13 @@ function draw() {
   //   if (millis() - songStartMillis > 45000) {
   //     vh.behaviors()
   //     dtnThemeSong.stop()
-  //     console.log("Solute! Stopping.")
+  //     console.log("Stopping.")
   //     noLoop()
   //   }
   //
   //   vh.edges()
   // }
-
-  // console.log(dtnThemeSong.isPlaying())
+  console.log(frameRate())
 }
 
 
@@ -96,7 +98,7 @@ function draw() {
 
 
 function keyPressed() {
-  if (key === 's') {
+  if (key === 's' && !playing) {
     // console.log(dtnThemeSong.volume())
     console.log("the song is about to play!")
     dtnThemeSong.play()
